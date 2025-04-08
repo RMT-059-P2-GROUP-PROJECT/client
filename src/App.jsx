@@ -3,6 +3,7 @@ import LandingPage from "./components/pages/LandingPage"
 import LoginPage from "./components/pages/LoginPage"
 import AboutPage from "./components/pages/AboutPage"
 import RegisterPage from "./components/pages/RegisterPage"
+import HomePage from "./components/pages/HomePage"
 
 function IndexLayout() {
 
@@ -16,6 +17,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        <Route path="/" element={<HomePage />} />
 
 
         {/* <Route path="/login" element={<LoginPage />} />
