@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router"
 import LandingPage from "./components/pages/LandingPage"
 import LoginPage from "./components/pages/LoginPage"
-import AboutUs from "./components/pages/AboutPage"
+import AboutPage from "./components/pages/AboutPage"
+import RegisterPage from "./components/pages/RegisterPage"
 
 function IndexLayout() {
 
@@ -13,7 +14,8 @@ function App() {
       <Routes>
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/about" element={<AboutUs />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
 
         {/* <Route path="/login" element={<LoginPage />} />
