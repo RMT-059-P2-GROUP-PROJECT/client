@@ -2,11 +2,18 @@ import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router"
 import Swal from "sweetalert2"
 import axiosInstance from "../../helpers/axiosInstance"
+import socket from "../../config/socket"
+
+
 
 function LoginPage() {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    useEffect(() => {
+        socket.disconnect().connected()
+    }, [])
 
     const onSubmit = async () => {
         try {
@@ -22,6 +29,7 @@ function LoginPage() {
 
             // save tokennya ke localStorage
             localStorage.setItem("access_token", response.access_token)
+            // localStorage.setItem("email", email)
 
             Swal.fire({
                 icon: 'success',
