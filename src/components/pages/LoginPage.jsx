@@ -1,7 +1,53 @@
+import { useState } from "react"
 import { NavLink, useNavigate } from "react-router"
+import Swal from "sweetalert2"
+import axiosInstance from "../../helpers/axiosInstance"
 
 function LoginPage() {
     const navigate = useNavigate()
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const onSubmit = async () => {
+        try {
+            const result = await axiosInstance({
+                method: "POST",
+                url: "/login",
+                data: {
+                    email: email,
+                    password: password
+                }
+            })
+            const response = result.data
+
+            // save tokennya ke localStorage
+            localStorage.setItem("access_token", response.access_token)
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Login Berhasil'
+            })
+
+            // pindah halaman
+            navigate('/')
+        } catch (error) {
+            if (error.response && error.response.data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.response.data.message,
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `Terjadi kesalahan. Silakan coba lagi`,
+                })
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
@@ -30,13 +76,20 @@ function LoginPage() {
                         <div></div>
 
                     </div>
-                    <form className="space-y-6 mt-6">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            onSubmit()
+                        }}
+                        className="space-y-6 mt-6">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Email address
                             </label>
                             <div className="mt-1">
                                 <input
+                                    type="email"
+                                    onChange={(e) => setEmail(e.target.value)}
                                     required
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
@@ -50,6 +103,7 @@ function LoginPage() {
                             <div className="mt-1">
                                 <input
                                     type="password"
+                                    onChange={(e) => setPassword(e.target.value)}
                                     required
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
