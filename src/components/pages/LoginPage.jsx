@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router"
 import Swal from "sweetalert2"
 import axiosInstance from "../../helpers/axiosInstance"
@@ -47,6 +47,61 @@ function LoginPage() {
             }
         }
     }
+
+    async function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        try {
+            const result = await axiosInstance({
+                method: "POST",
+                url: "/google-login",
+                data: {
+                    googleToken: response.credential
+                }
+            })
+            const responseBody = result.data
+
+            // save tokennya ke localStorage
+            localStorage.setItem("access_token", responseBody.access_token)
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "Berhasil login",
+            })
+
+            // pindah halaman
+            navigate('/')
+        } catch (error) {
+            if (error.response && error.response.data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.response.data.message,
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `Terjadi kesalahan. Silakan coba lagi. ${error}`,
+                })
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (localStorage.getItem("access_token")) {
+            navigate('/')
+        }
+
+        google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+            document.getElementById("btnGoogleLogin"),
+            { theme: "outline", size: "large" }  // customization attributes
+        );
+    }, [])
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
