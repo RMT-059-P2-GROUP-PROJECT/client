@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../helpers/axiosInstance";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import { GroupsContext } from "../contexts/groups";
 // import socket from "../config/socket";
 
 export default function Sidebar() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const navigate = useNavigate()
+
+  const { data, fetchData } = useContext(GroupsContext)
 
   // useEffect(() => {
   //   socket.on("online:users", (arg) => {
@@ -17,6 +20,10 @@ export default function Sidebar() {
   //     socket.off("online:users");
   //   };
   // }, []);
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
 
   const [showDialog, setShowDialog] = useState(false);
@@ -46,6 +53,7 @@ export default function Sidebar() {
         text: `Grup ${groupName} berhasil dibuat`,
       })
       setGroupName("");
+      fetchData()
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -79,18 +87,18 @@ export default function Sidebar() {
               <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> {ou.socketId} {ou.username}
             </li>
           ))} */}
-          <li className="flex items-center px-3 h-16 border-b-2">
-            <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Bahas Cuan
-          </li>
-          <li className="flex items-center px-3 h-16 border-b-2">
-            <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Indonesia Gelap (?)
-          </li>
+
+          {data.map((group) => {
+            return <li className="flex items-center px-3 h-16 border-b-2">
+              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{group.Group.name}
+            </li>
+          })}
           {/* Add more mock groups to test scrolling */}
-          {Array.from({ length: 20 }).map((_, index) => (
+          {/* {Array.from({ length: 20 }).map((_, index) => (
             <li key={index} className="flex items-center px-3 h-16 border-b-2">
               <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Test Group {index + 1}
             </li>
-          ))}
+          ))} */}
         </ul>
       </div>
 
