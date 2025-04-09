@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ChatItem from "../ChatItem";
-import OnlineUsers from "../OnlineUsers";
+import Sidebar from "../Sidebar";
 // import socket from "../config/socket";
 
 export default function HomePage() {
@@ -24,7 +24,7 @@ export default function HomePage() {
     return (
         <div className="flex-1 flex flex-row h-screen">
             {/* List Online Users */}
-            <OnlineUsers />
+            <Sidebar />
 
             <div className="flex flex-1 flex-col">
                 <div className="flex sm:items-center justify-between p-3 border-b-2 border-gray-200">
