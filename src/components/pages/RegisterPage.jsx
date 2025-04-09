@@ -1,12 +1,50 @@
 import { useEffect, useState } from "react";
 import { useNavigate, NavLink } from "react-router"
+import Swal from "sweetalert2";
+import axiosInstance from "../../helpers/axiosInstance";
 
 function RegisterPage() {
     const navigate = useNavigate()
-
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const onSubmit = async () => {
+        try {
+            const result = await axiosInstance({
+                method: "POST",
+                url: "/register",
+                data: {
+                    username: username,
+                    email: email,
+                    password: password
+                }
+            })
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Berhasil membuat akun'
+            })
+
+            // pindah halaman
+            navigate('/login')
+
+        } catch (error) {
+            if (error.response && error.response.data) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.response.data.message,
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `Terjadi kesalahan. Silakan coba lagi ${error}`,
+                })
+            }
+        }
+    }
 
     return (
         <>
@@ -41,7 +79,7 @@ function RegisterPage() {
                         </div>
                         <form onSubmit={(e) => {
                             e.preventDefault()
-                            onClick()
+                            onSubmit()
                         }} className="space-y-6 mt-6">
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
