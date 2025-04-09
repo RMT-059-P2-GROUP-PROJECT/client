@@ -4,7 +4,8 @@ import axiosInstance from "../helpers/axiosInstance";
 
 export const GlobalContext = createContext({
     data: [],
-    messages: []
+    messages: [],
+    groupId: 0
 });
 
 export function GlobalProvider(props) {
@@ -22,6 +23,12 @@ export function GlobalProvider(props) {
         setGroups(response);
     }
 
+    // groupId
+    const [groupId, setGroupId] = useState(null)
+    function setGroupIdHandler(id) {
+        setGroupId(id)
+    }
+
     // messages
     const [messages, setMessages] = useState([]);
     async function fetchMessages(id) {
@@ -36,6 +43,20 @@ export function GlobalProvider(props) {
         setMessages(response);
     }
 
+    // create mssage
+    async function createMessage(id, message) {
+        await axiosInstance({
+            method: "POST",
+            url: `/groups/${id}`,
+            data: {
+                message: message
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.access_token}`,
+            }
+        })
+    }
+
 
     return (
         <GlobalContext.Provider
@@ -45,6 +66,9 @@ export function GlobalProvider(props) {
                     fetchData,
                     messages: messages,
                     fetchMessages,
+                    createMessage,
+                    groupId,
+                    setGroupIdHandler
                 }
             }
         >

@@ -28,7 +28,7 @@ function LoginPage() {
 
             // save tokennya ke localStorage
             localStorage.setItem("access_token", response.access_token)
-            // localStorage.setItem("email", email)
+            localStorage.setItem("userId", response.id)
 
             Swal.fire({
                 icon: 'success',

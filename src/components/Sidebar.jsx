@@ -3,13 +3,14 @@ import axiosInstance from "../helpers/axiosInstance";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { GlobalContext } from "../contexts/global";
+import socket from "../config/socket";
 // import socket from "../config/socket";
 
 export default function Sidebar() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const navigate = useNavigate()
 
-  const { data, fetchData } = useContext(GlobalContext)
+  const { data, fetchData, setGroupIdHandler, groupId } = useContext(GlobalContext)
   const { messages, fetchMessages } = useContext(GlobalContext)
 
   // useEffect(() => {
@@ -133,7 +134,10 @@ export default function Sidebar() {
           {data.map((group) => {
             return <li onClick={() => {
               fetchMessages(group.Group.id)
-              console.log(messages)
+              socket.emit('join_group', group.Group.id);
+              setGroupIdHandler(group.Group.id)
+              // Swal.fire("Success", `Bergabung ke grup ${groupId}`, "success")
+
             }} className="flex items-center px-3 h-16 border-b-2" key={group.Group.id}>
               <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{`${group.Group.name} - ${group.Group.inviteCode}`}
             </li>
@@ -145,6 +149,7 @@ export default function Sidebar() {
         navigate('/login')
         Swal.fire("Success", "Logout berhasil", "success")
         localStorage.removeItem("access_token")
+        localStorage.removeItem("userId")
       }} className="px-2 py-2 bg-red-500 text-white font-bold m-4 rounded">Logout</button>
 
       {/* Group Creation Dialog */}

@@ -5,7 +5,7 @@ import { GlobalContext } from "../../contexts/global";
 import socket from "../../config/socket";
 
 export default function HomePage() {
-    const { messages, fetchMessages } = useContext(GlobalContext)
+    const { messages, fetchMessages, createMessage, groupId } = useContext(GlobalContext)
     const [newMessage, setNewMessage] = useState("");
     useEffect(() => {
         socket.on("mySocketId", (arg) => {
@@ -16,7 +16,12 @@ export default function HomePage() {
             console.log(`handShakeAuth:`, arg);
         });
 
-        fetchMessages(1)
+        // Listen for new messages
+        socket.on('new_message', (fromSrv) => {
+            // push new message to messages array
+            console.log(`${groupId}`)
+            fetchMessages(groupId)
+        });
     }, [])
 
     return (
@@ -43,7 +48,7 @@ export default function HomePage() {
                             key={`${idx}-${m.SenderId}`}
                             username={m.User.username}
                             message={m.message}
-                            isMe={m.User.username}
+                            isMe={m.SenderId == localStorage.userId}
                         />
                     ))}
                 </div>
@@ -52,8 +57,9 @@ export default function HomePage() {
                         e.preventDefault();
 
                         //kirim event ke server, yg berisi chat baru
-                        socket.emit("chat:new", newMessage);
+                        // socket.emit("chat:new", newMessage);
                         setNewMessage("")
+                        createMessage(groupId, newMessage)
                     }}
                     className="border-t-2 flex gap-4 border-gray-200 p-4"
                 >
