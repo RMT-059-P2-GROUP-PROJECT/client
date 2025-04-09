@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../helpers/axiosInstance";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 // import socket from "../config/socket";
 
 export default function Sidebar() {
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const navigate = useNavigate()
 
   // useEffect(() => {
   //   socket.on("online:users", (arg) => {
@@ -64,24 +66,39 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="w-64 md:w-96 border-r-2 border-gray-200">
+    <div className="w-64 md:w-96 border-r-2 border-gray-200 flex flex-col h-full">
       <div className="border-b-2 border-gray-200 p-3 flex flex-row justify-between">
         <h1 className="text-2xl">Chat Grup</h1>
         <button onClick={openDialog} className="px-2 py-2 bg bg-blue-400 text-white rounded">+ Grup Chat</button>
       </div>
-      <ul>
-        {/* {onlineUsers.map((ou) => (
-          <li key={ou.socketId} className="flex items-center px-3 h-16 border-b-2">
-            <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> {ou.socketId} {ou.username}
+
+      <div className="overflow-y-auto flex-1">
+        <ul>
+          {/* {onlineUsers.map((ou) => (
+            <li key={ou.socketId} className="flex items-center px-3 h-16 border-b-2">
+              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> {ou.socketId} {ou.username}
+            </li>
+          ))} */}
+          <li className="flex items-center px-3 h-16 border-b-2">
+            <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Bahas Cuan
           </li>
-        ))} */}
-        <li className="flex items-center px-3 h-16 border-b-2">
-          <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Bahas Cuan
-        </li>
-        <li className="flex items-center px-3 h-16 border-b-2">
-          <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Indonesia Gelap (?)
-        </li>
-      </ul>
+          <li className="flex items-center px-3 h-16 border-b-2">
+            <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Indonesia Gelap (?)
+          </li>
+          {/* Add more mock groups to test scrolling */}
+          {Array.from({ length: 20 }).map((_, index) => (
+            <li key={index} className="flex items-center px-3 h-16 border-b-2">
+              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Test Group {index + 1}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <button onClick={() => {
+        navigate('/login')
+        Swal.fire("Success", "Logout berhasil", "success")
+        localStorage.removeItem("access_token")
+      }} className="px-2 py-2 bg-red-500 text-white font-bold m-4 rounded">Logout</button>
 
       {/* Group Creation Dialog */}
       {showDialog && (
