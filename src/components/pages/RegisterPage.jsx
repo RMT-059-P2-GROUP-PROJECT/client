@@ -40,11 +40,17 @@ function RegisterPage() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: `Terjadi kesalahan. Silakan coba lagi ${error}`,
+                    text: `Terjadi kesalahan. Silakan coba lagi`,
                 })
             }
         }
     }
+
+    useEffect(() => {
+        if (localStorage.getItem("access_token")) {
+            navigate('/')
+        }
+    }, [])
 
     return (
         <>
