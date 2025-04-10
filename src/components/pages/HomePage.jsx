@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import ChatItem from "../ChatItem";
 import Sidebar from "../Sidebar";
 import { GlobalContext } from "../../contexts/global";
@@ -7,6 +7,8 @@ import socket from "../../config/socket";
 export default function HomePage() {
     const { messages, fetchMessages, createMessage, groupId } = useContext(GlobalContext)
     const [newMessage, setNewMessage] = useState("");
+    const chatRef = useRef(null);
+
     useEffect(() => {
         socket.on("mySocketId", (arg) => {
             console.log(`socketId:`, arg);
@@ -22,7 +24,14 @@ export default function HomePage() {
             console.log(`${groupId}`)
             fetchMessages(groupId)
         });
-    }, [])
+
+        if (chatRef.current) {
+            chatRef.current.scrollTo({
+                top: chatRef.current.scrollHeight,
+                behavior: "smooth"
+            })
+        }
+    }, [groupId,messages])
 
     return (
         <div className="flex-1 flex flex-row h-screen">
@@ -41,8 +50,8 @@ export default function HomePage() {
                 </div>
                 <div
                     id="chats"
-                    className="flex flex-col flex-1 space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
-                >
+                    ref={chatRef}
+                    className="flex flex-col flex-1 space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
                     {messages.map((m, idx) => (
                         <ChatItem
                             key={`${idx}-${m.SenderId}`}

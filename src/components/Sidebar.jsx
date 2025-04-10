@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { GlobalContext } from "../contexts/global";
 import socket from "../config/socket";
+import './Sidebar.css'
 // import socket from "../config/socket";
 
 export default function Sidebar() {
@@ -138,7 +139,7 @@ export default function Sidebar() {
               setGroupIdHandler(group.Group.id)
               // Swal.fire("Success", `Bergabung ke grup ${groupId}`, "success")
 
-            }} className="flex items-center px-3 h-16 border-b-2" key={group.Group.id}>
+            }} className="flex items-center px-3 h-16 border-b-2 list-group" key={group.Group.id}>
               <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{`${group.Group.name} - ${group.Group.inviteCode}`}
             </li>
           })}
