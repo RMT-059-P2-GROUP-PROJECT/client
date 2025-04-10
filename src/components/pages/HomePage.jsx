@@ -3,10 +3,13 @@ import ChatItem from "../ChatItem";
 import Sidebar from "../Sidebar";
 import { GlobalContext } from "../../contexts/global";
 import socket from "../../config/socket";
+import axiosInstance from "../../helpers/axiosInstance";
 
 export default function HomePage() {
     const { messages, fetchMessages, createMessage, groupId } = useContext(GlobalContext)
     const [newMessage, setNewMessage] = useState("");
+    const [summaryPopup, setSummaryPopup] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
     const chatRef = useRef(null);
 
     useEffect(() => {
@@ -36,7 +39,25 @@ export default function HomePage() {
             socket.off("handShakeAuth");
             socket.off("new_message");
         }
-    }, [groupId,messages])
+    }, [groupId, messages])
+
+    const handleSummerize = async () => {
+        try {
+            const result = await axiosInstance({
+                method: "GET",
+                url: `/summerize-AI/${groupId}`,
+                headers: {
+                    Authorization: `Bearer ${localStorage.access_token}`,
+                }
+            })
+            console.log(result.data.summary)
+            setSummaryPopup(result.data.summary);
+            setShowPopup(true);
+        } catch (err) {
+            console.log(err);
+            // 
+        }
+    }
 
     return (
         <div className="flex-1 flex flex-row h-screen">
@@ -66,6 +87,12 @@ export default function HomePage() {
                         />
                     ))}
                 </div>
+                <button
+                    onClick={handleSummerize}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                >
+                    Summarize
+                </button>
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -88,8 +115,35 @@ export default function HomePage() {
                     />
                     <button type="submit">send</button>
                 </form>
+                {showPopup && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-800">Ringkasan AI</h2>
+                            <textarea
+                                className="w-full h-40 p-3 border rounded-md text-gray-700 bg-gray-100 resize-none"
+                                value={summaryPopup}
+                                readOnly
+                            />
+                            <div className="mt-4 flex justify-end space-x-2">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(summaryPopup);
+                                    }}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Salin
+                                </button>
+                                <button
+                                    onClick={() => setShowPopup(false)}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+                                >
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
-
     );
 }
