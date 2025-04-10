@@ -2,9 +2,6 @@ import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router"
 import Swal from "sweetalert2"
 import axiosInstance from "../../helpers/axiosInstance"
-import socket from "../../config/socket"
-
-
 
 function LoginPage() {
     const navigate = useNavigate()
@@ -12,7 +9,9 @@ function LoginPage() {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        socket.disconnect().connected()
+        if (localStorage.getItem("access_token")) {
+            navigate('/')
+        }
     }, [])
 
     const onSubmit = async () => {
@@ -29,7 +28,7 @@ function LoginPage() {
 
             // save tokennya ke localStorage
             localStorage.setItem("access_token", response.access_token)
-            // localStorage.setItem("email", email)
+            localStorage.setItem("userId", response.id)
 
             Swal.fire({
                 icon: 'success',
@@ -57,7 +56,6 @@ function LoginPage() {
     }
 
     async function handleCredentialResponse(response) {
-        console.log("Encoded JWT ID token: " + response.credential);
         try {
             const result = await axiosInstance({
                 method: "POST",

@@ -2,14 +2,16 @@ import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../helpers/axiosInstance";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
-import { GroupsContext } from "../contexts/groups";
+import { GlobalContext } from "../contexts/global";
+import socket from "../config/socket";
 // import socket from "../config/socket";
 
 export default function Sidebar() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const navigate = useNavigate()
 
-  const { data, fetchData } = useContext(GroupsContext)
+  const { data, fetchData, setGroupIdHandler, groupId } = useContext(GlobalContext)
+  const { messages, fetchMessages } = useContext(GlobalContext)
 
   // useEffect(() => {
   //   socket.on("online:users", (arg) => {
@@ -99,7 +101,6 @@ export default function Sidebar() {
       fetchData()
 
     } catch (error) {
-      console.log(error)
       if (error.response && error.response.data) {
         Swal.fire({
           icon: 'error',
@@ -125,28 +126,22 @@ export default function Sidebar() {
           <button onClick={openDialog} className="px-2 py-2 bg bg-blue-400 text-white rounded">+ Grup Chat</button>
           <button className="px-2 py-2 bg bg-green-400 text-white rounded" onClick={openJoinDialog}>Join Group</button>
         </div>
-        
+
       </div>
 
       <div className="overflow-y-auto flex-1">
         <ul>
-          {/* {onlineUsers.map((ou) => (
-            <li key={ou.socketId} className="flex items-center px-3 h-16 border-b-2">
-              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> {ou.socketId} {ou.username}
-            </li>
-          ))} */}
-
           {data.map((group) => {
-            return <li className="flex items-center px-3 h-16 border-b-2" key={group.Group.id}>
-              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{group.Group.name}
+            return <li onClick={() => {
+              fetchMessages(group.Group.id)
+              socket.emit('join_group', group.Group.id);
+              setGroupIdHandler(group.Group.id)
+              // Swal.fire("Success", `Bergabung ke grup ${groupId}`, "success")
+
+            }} className="flex items-center px-3 h-16 border-b-2" key={group.Group.id}>
+              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{`${group.Group.name} - ${group.Group.inviteCode}`}
             </li>
           })}
-          {/* Add more mock groups to test scrolling */}
-          {/* {Array.from({ length: 20 }).map((_, index) => (
-            <li key={index} className="flex items-center px-3 h-16 border-b-2">
-              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span> Test Group {index + 1}
-            </li>
-          ))} */}
         </ul>
       </div>
 
@@ -154,6 +149,7 @@ export default function Sidebar() {
         navigate('/login')
         Swal.fire("Success", "Logout berhasil", "success")
         localStorage.removeItem("access_token")
+        localStorage.removeItem("userId")
       }} className="px-2 py-2 bg-red-500 text-white font-bold m-4 rounded">Logout</button>
 
       {/* Group Creation Dialog */}

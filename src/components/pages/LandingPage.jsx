@@ -2,24 +2,10 @@ import { useNavigate } from 'react-router'
 import hero from '../../assets/hero.svg'
 import Navbar from '../Navbar'
 import { useEffect } from 'react'
-import socket from '../../config/socket'
 
 
 function LandingPage() {
     const navigate = useNavigate()
-
-    useEffect(() => {
-        socket.on("wellcome_message", (arg) => {
-            console.log("halo, ada salam dari server")
-            console.log(arg, "<<< arg")
-        });
-
-        return () => {
-            socket.off("wellcome_message")
-        }
-    }, [])
-
-
     return (
         <section className='h-full'>
             <Navbar />
