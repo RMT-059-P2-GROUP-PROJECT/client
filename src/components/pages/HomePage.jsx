@@ -22,7 +22,13 @@ export default function HomePage() {
             console.log(`${groupId}`)
             fetchMessages(groupId)
         });
-    }, [])
+
+        return () => {
+            socket.off("mySocketId");
+            socket.off("handShakeAuth");
+            socket.off("new_message");
+        }
+    }, [groupId])
 
     return (
         <div className="flex-1 flex flex-row h-screen">
