@@ -137,6 +137,7 @@ export default function Sidebar() {
               fetchMessages(group.Group.id)
               socket.emit('join_group', group.Group.id);
               setGroupIdHandler(group.Group.id)
+              console.log(`${group.Group.id} <<<<<<<<`)
               // Swal.fire("Success", `Bergabung ke grup ${groupId}`, "success")
 
             }} className="flex items-center px-3 h-16 border-b-2 list-group" key={group.Group.id}>

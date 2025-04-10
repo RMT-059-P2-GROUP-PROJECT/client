@@ -31,6 +31,11 @@ export default function HomePage() {
                 behavior: "smooth"
             })
         }
+        return () => {
+            socket.off("mySocketId");
+            socket.off("handShakeAuth");
+            socket.off("new_message");
+        }
     }, [groupId,messages])
 
     return (
