@@ -84,6 +84,7 @@ export default function HomePage() {
                             username={m.User.username}
                             message={m.message}
                             isMe={m.SenderId == localStorage.userId}
+                            createdAt={m.createdAt}
                         />
                     ))}
                 </div>
