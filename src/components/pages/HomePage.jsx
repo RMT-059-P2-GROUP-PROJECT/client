@@ -95,7 +95,7 @@ export default function HomePage() {
                 <button
                     onClick={handleSummerize}
                     disabled={isLoading}
-                    className={`px-4 py-2 ${isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded transition flex items-center justify-center`}
+                    className={`px-4 py-2 ${isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded transition flex items-center justify-center mx-4 mb-4`}
                 >
                     {isLoading ? (
                         <>

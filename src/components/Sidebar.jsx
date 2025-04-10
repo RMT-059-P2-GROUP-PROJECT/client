@@ -141,7 +141,11 @@ export default function Sidebar() {
               // Swal.fire("Success", `Bergabung ke grup ${groupId}`, "success")
 
             }} className="flex items-center px-3 h-16 border-b-2 list-group" key={group.Group.id}>
-              <span className="bg-green-600 mr-2 rounded-lg w-4 h-4"></span>{`${group.Group.name} - ${group.Group.inviteCode}`}
+              <span className="bg-green-600 mr-4 rounded-lg w-4 h-4"></span>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-semibold">{group.Group.name}</h1>
+                <p className="text-gray-500">{`Invite code: ${group.Group.inviteCode}`}</p>
+              </div>
             </li>
           })}
         </ul>
